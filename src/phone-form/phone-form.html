@@ -27,20 +27,22 @@
             <div class="phone-form_component w-form">
               <form id="phone-form" name="wf-form-Phone-Form" data-name="Phone Form" class="phone-form_form">
                 <div class="prefix-dropdown_component">
-                  <div class="prefix-dropdown_toggle"><img src="images/us.svg" loading="lazy" alt="United States Flag" class="prefix-dropdown_flag">
+                  <div class="prefix-dropdown_toggle">
+                    <img src="images/us.svg" loading="lazy" alt="United States Flag" class="prefix-dropdown_flag">
                     <div class="prefix-dropdown_value">+1 </div>
-                    <div class="prefix-dropdown_chevron w-embed"><svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <div class="prefix-dropdown_chevron w-embed">
+                      <svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M439.9 24.3L420.1 4.49998C415.4 -0.200024 407.8 -0.200024 403.1 4.49998L222 185.2L40.9 4.49998C36.2 -0.200024 28.5999 -0.200024 23.9 4.49998L4.09995 24.3C-0.600049 29 -0.600049 36.6 4.09995 41.3L213.5 250.7C218.2 255.4 225.8 255.4 230.5 250.7L439.9 41.3C444.6 36.6 444.6 29 439.9 24.3V24.3Z"></path>
-                      </svg></div>
+                      </svg>
+                    </div>
                   </div>
                   <div id="prefix-dropdown-list" class="prefix-dropdown_list-wrapper">
                     <ul role="list" class="prefix-dropdown_list">
-                      <li class="prefix-dropdown_item selected"><img src="images/us.svg" loading="lazy" alt="United States Flag" class="prefix-dropdown_flag">
-                        <div class="prefix-dropdown_value">US</div>
-                      </li>
                     </ul>
                   </div>
-                </div><input type="tel" class="text-field w-input" maxlength="256" name="phoneNumber" data-name="Phone Number" placeholder="Your phone" id="phoneNumber" required=""><input type="submit" value="Get Started" data-wait="Sending..." class="button submit w-button">
+                </div>
+                <input type="hidden" value="" id="hidden-input">
+                <input type="tel" class="text-field w-input" maxlength="256" name="phoneNumber" data-name="Phone Number" placeholder="Your phone" id="phoneNumber" required=""><input type="submit" value="Get Started" data-wait="Sending..." class="button submit w-button">
               </form>
               <div class="success-message w-form-done">
                 <div>Thank you for your submission!</div>
@@ -79,3 +81,95 @@
   <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
 </body>
 </html>
+<script type="text/javascript">
+
+function GetUserLocation (){
+  if(!window.localStorage.getItem("default")){
+  fetch('https://extreme-ip-lookup.com/json/')
+  .then( res => res.json())
+  .then(response => {
+  fetch("https://restcountries.eu/rest/v2/alpha?codes=" + response.countryCode).then(
+  resp => resp.json())
+  .then(data => {
+    let items = '<img src="http://www.geognos.com/api/en/countries/flag/' + data[0].alpha2Code + '.png" loading="lazy" alt="'+ response.countryCode +' Flag" class="prefix-dropdown_flag"><div class="prefix-dropdown_value">+' + data[0].callingCodes[0] +'</div><div class="prefix-dropdown_chevron w-embed"><svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M439.9 24.3L420.1 4.49998C415.4 -0.200024 407.8 -0.200024 403.1 4.49998L222 185.2L40.9 4.49998C36.2 -0.200024 28.5999 -0.200024 23.9 4.49998L4.09995 24.3C-0.600049 29 -0.600049 36.6 4.09995 41.3L213.5 250.7C218.2 255.4 225.8 255.4 230.5 250.7L439.9 41.3C444.6 36.6 444.6 29 439.9 24.3V24.3Z"></path></svg></div>';
+      
+      document.getElementsByClassName("prefix-dropdown_toggle")[0].innerHTML = items;
+      document.getElementById(data[0].callingCodes[0]).classList.toggle("selected");
+      document.getElementById("hidden-input").value = data[0].alpha2Code;
+  }).catch(err => {
+    let items = '<img src="http://www.geognos.com/api/en/countries/flag/KE.png" loading="lazy" alt="Kenya Flag" class="prefix-dropdown_flag"><div class="prefix-dropdown_value">+254</div><div class="prefix-dropdown_chevron w-embed"><svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M439.9 24.3L420.1 4.49998C415.4 -0.200024 407.8 -0.200024 403.1 4.49998L222 185.2L40.9 4.49998C36.2 -0.200024 28.5999 -0.200024 23.9 4.49998L4.09995 24.3C-0.600049 29 -0.600049 36.6 4.09995 41.3L213.5 250.7C218.2 255.4 225.8 255.4 230.5 250.7L439.9 41.3C444.6 36.6 444.6 29 439.9 24.3V24.3Z"></path></svg></div>';
+      document.getElementsByClassName("prefix-dropdown_toggle")[0].innerHTML = items;
+      document.getElementById("254").classList.toggle("selected");
+      document.getElementById("hidden-input").value = "KE";
+  });
+ })
+ .catch((data, status) => {
+    //console.log('Request failed');
+ });
+}else{
+  let userOptions = JSON.parse(window.localStorage.getItem("default"));
+  let items = '<img src="http://www.geognos.com/api/en/countries/flag/'+userOptions.CountryCode+'.png" loading="lazy" alt="United States Flag" class="prefix-dropdown_flag"><div class="prefix-dropdown_value">+'+userOptions.CallingCode+'</div><div class="prefix-dropdown_chevron w-embed"><svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M439.9 24.3L420.1 4.49998C415.4 -0.200024 407.8 -0.200024 403.1 4.49998L222 185.2L40.9 4.49998C36.2 -0.200024 28.5999 -0.200024 23.9 4.49998L4.09995 24.3C-0.600049 29 -0.600049 36.6 4.09995 41.3L213.5 250.7C218.2 255.4 225.8 255.4 230.5 250.7L439.9 41.3C444.6 36.6 444.6 29 439.9 24.3V24.3Z"></path></svg></div>';
+      document.getElementsByClassName("prefix-dropdown_toggle")[0].innerHTML = items;
+      document.getElementById("254").classList.toggle("selected");
+      document.getElementById("hidden-input").value = userOptions.CountryCode;
+}
+}
+function GetCountries(){
+  const ul = document.getElementsByClassName("prefix-dropdown_list")[0];
+
+  fetch('https://restcountries.eu/rest/v2/all?fields=name;callingCodes;alpha3Code;alpha2Code', {
+    method: 'GET'
+  }).then(response => response.json())
+  .then(data => {
+    for(let i = 0; data.length ; i++){
+      let country = data[i];
+
+      let countryName = country['name'];
+      let countryCode = country.alpha2Code;
+      let CallingCode = country.callingCodes[0];
+      let flag = "http://www.geognos.com/api/en/countries/flag/" + countryCode + ".png";
+      let countryData = '<img src="'+ flag + '" loading="lazy" alt="' + countryName + ' Flag" class="prefix-dropdown_flag" id="img-' + CallingCode + '"><div class="prefix-dropdown_value">'+ countryCode +'</div><span hidden id="countryCode-'+CallingCode +'">' + countryCode +'<span>';
+      let li = document.createElement("li");
+      li.setAttribute("class", "prefix-dropdown_item");
+      li.setAttribute("id",  CallingCode);
+      li.innerHTML = countryData;
+      ul.appendChild(li);
+   }
+  })
+  .catch(err => console.log(err));
+}
+
+window.onload = function(){
+  GetCountries();
+  GetUserLocation();
+}
+
+/** Populate Selected Value **/
+const ul = document.getElementsByClassName("prefix-dropdown_list")[0];
+ul.addEventListener('click', function(e){
+    let target = e.target;
+    if(!target){
+      return;
+    }
+    if(target.tagName === "LI"){
+      let CountryCode = target.id;
+      let ImageUrl = document.getElementById("img-" + CountryCode).src;
+
+
+      let data = '<img src="' + ImageUrl + '" loading="lazy" alt="United States Flag" class="prefix-dropdown_flag"><div class="prefix-dropdown_value">+' + CountryCode +'</div><div class="prefix-dropdown_chevron w-embed"><svg viewbox="0 0 444 255" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M439.9 24.3L420.1 4.49998C415.4 -0.200024 407.8 -0.200024 403.1 4.49998L222 185.2L40.9 4.49998C36.2 -0.200024 28.5999 -0.200024 23.9 4.49998L4.09995 24.3C-0.600049 29 -0.600049 36.6 4.09995 41.3L213.5 250.7C218.2 255.4 225.8 255.4 230.5 250.7L439.9 41.3C444.6 36.6 444.6 29 439.9 24.3V24.3Z"></path></svg></div>';
+      document.getElementsByClassName("prefix-dropdown_toggle")[0].innerHTML = data;
+      document.getElementById(CountryCode).classList.toggle("selected");
+
+      let x = document.getElementById("countryCode-"+CountryCode).innerText;
+      document.getElementById("hidden-input").value = x;
+
+      //save to localstorage
+      let userSelection = {
+        "CountryCode" : x,
+        "CallingCode" : CountryCode
+      }
+      window.localStorage.setItem("default", JSON.stringify(userSelection));
+    }
+  });
+
+</script>
